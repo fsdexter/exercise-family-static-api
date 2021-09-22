@@ -36,50 +36,36 @@ def get_family_members():
 
     return jsonify(response_body), 200
 
+### 2) Retrieve one member
 @app.route('/member/<int:id>', methods=['GET'])
 def get_member(id):
 
     # this is how you can use the Family datastructure by calling its methods
     member = jackson_family.get_member(id)
-    response_body = {
-        "member": member
-    }
-
+    
     if member is not None:
-        return jsonify(response_body), 200
+        return jsonify(member), 200
     else:
         return "Member Not FOUND", 400
 
 # ### 3) Add (POST) new member
+@app.route('/member', methods=['POST'])
+def add_member():
+    member = request.json
+    if not member:
+        return jsonify({"msj":"invallid imput"}), 400
+    jackson_family.add_member(member)
+    return jsonify({"msj":"Member added"}), 200
 
-# Which adds a new member to the family data structure.
+### 4) DELETE one member
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    member = jackson_family.delete_member(member_id)
+    if not member:
+        return jsonify({"Msj":"El id no existe!!"})
+    print("Miembro eliminado!!")
+    return jsonify(member)
 
-# ```md
-# POST /member
-
-# REQUEST BODY (content_type: application/json):
-
-# {
-#     first_name: String,
-#     age: Int,
-#     lucky_numbers: [],
-#     id: Int *optional
-# }
-
-# RESPONSE (content_type: application/json):
-
-# status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-# body: empty
-# ```
-
-# Keep in mind that POST request data dictionary may contain a key and a value for this new member `id`.
-# - If it does not, your API should randomly generate one when adding as a family members.
-# - If it does include it, then that is the value to be used for such end.
-
-
- 
-        
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
@@ -87,73 +73,3 @@ if __name__ == '__main__':
 
 
 
-# @
-# @
-# @
-
-
-# ### 2) Retrieve one member
-
-# Which returns the member of the family where `id == member_id`.
-
-# ```md
-# GET /member/<int:member_id>
-
-# RESPONSE (content_type: application/json):
-
-# status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-# body: //the member's json object
-
-# {
-#     "id": Int,
-#     "first_name": String,
-#     "age": Int,
-#     "lucky_numbers": List
-# }
-
-# ```
-
-# ### 3) Add (POST) new member
-
-# Which adds a new member to the family data structure.
-
-# ```md
-# POST /member
-
-# REQUEST BODY (content_type: application/json):
-
-# {
-#     first_name: String,
-#     age: Int,
-#     lucky_numbers: [],
-#     id: Int *optional
-# }
-
-# RESPONSE (content_type: application/json):
-
-# status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-# body: empty
-# ```
-
-# Keep in mind that POST request data dictionary may contain a key and a value for this new member `id`.
-# - If it does not, your API should randomly generate one when adding as a family members.
-# - If it does include it, then that is the value to be used for such end.
-
-# ### 4) DELETE one member
-
-# Which deletes a family member with `id == member_id`
-
-# ```md
-# DELETE /member/<int:member_id>
-
-# RESPONSE (content_type: application/json):
-
-# status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-# body: {
-#     done: True
-# }    
-
-# ```
