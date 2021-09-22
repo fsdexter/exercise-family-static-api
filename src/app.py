@@ -25,6 +25,7 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+### 1) Get all family members:
 @app.route('/members', methods=['GET'])
 def get_family_members():
 
